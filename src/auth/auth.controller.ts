@@ -12,7 +12,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { LoginDto } from 'src/auth/dto/login.dto';
 import type { Request } from 'express';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { RegisterDto } from 'src/auth/dto/register.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -36,7 +36,7 @@ export class AuthController {
   }
 
   @Post('register')
-  register(@Req() req: Request, @Body() createUserDto: CreateUserDto) {
-    return this.authService.register(req, createUserDto);
+  register(@Req() req: Request, @Body() registerDto: RegisterDto) {
+    return this.authService.register(req, registerDto);
   }
 }

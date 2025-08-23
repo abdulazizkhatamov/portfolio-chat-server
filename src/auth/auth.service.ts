@@ -10,7 +10,7 @@ import type { Request } from 'express';
 import { User, UserDocument } from 'src/users/entities/user.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { RegisterDto } from 'src/auth/dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -53,8 +53,8 @@ export class AuthService {
     return { message: 'User logged in successfully' };
   }
 
-  async register(request: Request, createUserDto: CreateUserDto) {
-    const { first_name, last_name, email, password } = createUserDto;
+  async register(request: Request, registerDto: RegisterDto) {
+    const { first_name, last_name, email, password } = registerDto;
 
     const user = await this.userModel.findOne({ email });
 
