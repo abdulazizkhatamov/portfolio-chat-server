@@ -14,11 +14,8 @@ export class Conversation {
   participants: Types.ObjectId[];
 
   // group chats
-  @Prop()
-  name?: string;
-
-  @Prop()
-  groupAvatar?: string;
+  @Prop({ required: true })
+  name: string;
 
   // last message caching
   @Prop({ type: Types.ObjectId, ref: 'Message' })
