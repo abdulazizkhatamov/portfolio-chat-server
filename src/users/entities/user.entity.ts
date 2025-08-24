@@ -1,5 +1,6 @@
+// user.schema.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import * as argon from 'argon2';
 
 export interface UserMethods {
@@ -9,10 +10,7 @@ export interface UserMethods {
 
 export type UserDocument = HydratedDocument<User> & UserMethods;
 
-@Schema({
-  timestamps: true,
-  versionKey: false,
-})
+@Schema({ timestamps: true, versionKey: false })
 export class User {
   @Prop({ required: true })
   first_name: string;
@@ -26,13 +24,16 @@ export class User {
   @Prop({ required: true })
   password: string;
 
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }] })
+  contacts: Types.ObjectId[];
+
   @Prop({ default: Date.now })
   lastSeen: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
-// Explicitly type `this` as UserDocument
+// 🔐 Password methods
 UserSchema.methods.setPassword = async function (
   this: UserDocument,
   password: string,
@@ -51,8 +52,8 @@ UserSchema.methods.verifyPassword = async function (
   return argon.verify(this.password, password);
 };
 
-// Pre-save hook with typed `this`
-UserSchema.pre<UserDocument>('save', async function (this: UserDocument, next) {
+// Pre-save hook
+UserSchema.pre<UserDocument>('save', async function (this, next) {
   if (
     this.isModified('password') &&
     typeof this.password === 'string' &&
