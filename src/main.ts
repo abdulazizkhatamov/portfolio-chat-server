@@ -7,7 +7,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { parseBoolean } from 'src/utils/parser';
 import { csrfSynchronisedProtection } from 'src/common/csrf.config';
 import { RedisStore } from 'connect-redis';
-import { connectRedis } from 'src/libs/redis-client'; // ⬅️ our singleton
+import { connectRedis } from 'src/libs/redis-client';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -63,6 +64,16 @@ async function bootstrap() {
 
   app.use(csrfSynchronisedProtection);
 
+  const documentConfig = new DocumentBuilder()
+    .setTitle('Portfolio Chat App')
+    .setDescription(
+      'The starting Nest JS project API description for portfolio chat',
+    )
+    .setVersion('1.0')
+    .build();
+  const documentFactory = () =>
+    SwaggerModule.createDocument(app, documentConfig);
+  SwaggerModule.setup('api', app, documentFactory);
   await app.listen(port);
 }
 
